@@ -1,3 +1,4 @@
+from nltk import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
 from nltk.corpus import stopwords
 from nltk.sentiment.util import *
