@@ -1,19 +1,9 @@
 from nltk import NaiveBayesClassifier
 from nltk.corpus import movie_reviews
-from nltk.corpus import stopwords
 from nltk.sentiment.util import *
+from extract_features import extract_feature
 import random
 import pickle
-
-def extract_feature(words):
-    stop_words = set(stopwords.words('english'))
-    negated_stop_words = set({})
-    for word in stop_words:
-        negated_stop_words.add(word)
-        negated_stop_words.add(word + "_NEG")
-
-    filtered_words = [word for word in words if word not in negated_stop_words]
-    return {word: True for word in filtered_words}
 
 def get_train_data():
     positive_reviews = [mark_negation(list(movie_reviews.words(fileid)))
@@ -31,7 +21,10 @@ def get_train_data():
 
 def train_classifier():
     train_data = get_train_data()
+    print(len(train_data))
     classifier = NaiveBayesClassifier.train(train_data)
 
     with open("../models/nltk_data_trained_model.pkl", "wb") as file:
         pickle.dump(classifier, file)
+
+train_classifier()

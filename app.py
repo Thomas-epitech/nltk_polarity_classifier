@@ -11,4 +11,9 @@ def run():
         sentence = input("Sentence: ")
     else:
         sentence = sys.argv[1]
-    print(classify_sentence(sentence))
+    classification = classify_sentence(sentence)
+    print("Your sentence is ", end='')
+    if classification == 0:
+        print("NEGATIVE")
+    else:
+        print("POSITIVE")
