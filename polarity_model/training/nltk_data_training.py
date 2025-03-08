@@ -34,22 +34,3 @@ def train_classifier():
 
     with open("../models/nltk_data_trained_model.pkl", "wb") as file:
         pickle.dump(classifier, file)
-
-"""
-def classify_sentence(sentence):
-    words = mark_negation(word_tokenize(sentence.lower()))
-    features = extract_feature(words)
-    print(features)
-    return classifier.classify(features)
-
-test_sentences = [
-    "I’m not happy with my appearance.",
-    "I’m frustrated with my progress.",
-    "I’m worried about the future.",
-    "I’m not satisfied with my work.",
-    "I’m not happy with the direction my life is taking."
-]
-
-for s in test_sentences:
-    print(f"Sentence: {s}\nSentiment: {classify_sentence(s)}\n")
-"""
