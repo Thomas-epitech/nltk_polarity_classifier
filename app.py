@@ -1,5 +1,5 @@
 import sys
-from polarity_model.using.nltk_data_trained import classify_sentence
+from polarity_model.using.classify_sentence import classify_sentence
 
 def run():
     nb_args = len(sys.argv)
@@ -13,7 +13,7 @@ def run():
         sentence = sys.argv[1]
     classification = classify_sentence(sentence)
     print("Your sentence is ", end='')
-    if classification == 0:
+    if classification["0"] > classification["4"]:
         print("NEGATIVE")
     else:
         print("POSITIVE")

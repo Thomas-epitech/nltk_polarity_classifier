@@ -6,10 +6,14 @@ import random
 from nltk.tokenize import word_tokenize
 from nltk.sentiment.util import mark_negation
 from nltk.corpus import stopwords
-from nltk import NaiveBayesClassifier
 
 training_dir = os.path.dirname(os.path.abspath(__file__))
 polarity_model_dir = os.path.dirname(training_dir)
+
+sys.path.append(os.path.join(polarity_model_dir, "NaiveBayesClassifier"))
+
+from NaiveBayesClassifier import NaiveBayesClassifier
+
 root_dir = os.path.dirname(polarity_model_dir)
 
 sys.path.append(os.path.join(root_dir, "load_bar"))
@@ -50,6 +54,23 @@ def tokenize(tweets):
         iteration += 1
     return tokenized_tweets
 
+def filter_words(tweets):
+    filtered_tweets = []
+    iteration = 0
+    stop_words = set(stopwords.words('english'))
+
+    for t in tweets:
+        filtered = []
+        for word in t[0]:
+            if word not in stop_words:
+                filtered.append(word)
+        filtered_tweets.append((filtered, t[1]))
+        loading(iteration, nb_tweets, prefix="Filtering words", suffix="Complete", loaded='▓', unloaded='▒', length=50, left_side='', right_side='')
+        iteration += 1
+    return filtered_tweets
+
+
+
 def negate(tweets):
     tokenized_tweets = []
     iteration = 0
@@ -87,7 +108,7 @@ def get_train_data(path_to_data):
 
     with open(path_to_data, newline='', encoding='windows-1252') as data_file:
         file_read = csv.reader(data_file)
-        return extract_features(negate(tokenize(lowercase(extract_tweets(file_read)))))
+        return negate(filter_words(tokenize(lowercase(extract_tweets(file_read)))))
 
 def train():
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -97,10 +118,8 @@ def train():
     train_data = get_train_data(data_path)
     print("Shuffling data ...")
     random.shuffle(train_data)
+    classifier = NaiveBayesClassifier(train_data)
     print("Training model...")
-    print(len(train_data))
-    classifier = NaiveBayesClassifier.train(train_data)
+    classifier.train()
     with open(model_path, "wb") as file:
         pickle.dump(classifier, file)
-
-train()
