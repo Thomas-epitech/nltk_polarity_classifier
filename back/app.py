@@ -1,5 +1,5 @@
 import sys
-from polarity_model.using.classify_sentence import classify_sentence
+from using.classify_sentence import classify_sentence
 
 def run():
     nb_args = len(sys.argv)

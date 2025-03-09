@@ -11,13 +11,9 @@ training_dir = os.path.dirname(os.path.abspath(__file__))
 polarity_model_dir = os.path.dirname(training_dir)
 
 sys.path.append(os.path.join(polarity_model_dir, "NaiveBayesClassifier"))
+sys.path.append(os.path.join(polarity_model_dir, "load_bar"))
 
 from NaiveBayesClassifier import NaiveBayesClassifier
-
-root_dir = os.path.dirname(polarity_model_dir)
-
-sys.path.append(os.path.join(root_dir, "load_bar"))
-
 from loading import loading
 
 
