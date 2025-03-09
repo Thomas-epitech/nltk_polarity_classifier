@@ -12,7 +12,6 @@ def run():
     else:
         sentence = sys.argv[1]
     classification = classify_sentence(sentence)
-    print(classification)
     print(f"Your sentence is {round(max(classification.values()) * 100, 2)}% likely to be ", end='')
     if classification[0] > classification[4]:
         print("NEGATIVE")
