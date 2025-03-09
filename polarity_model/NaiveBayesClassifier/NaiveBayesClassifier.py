@@ -1,3 +1,5 @@
+import math
+
 class NaiveBayesClassifier:
 
     def __init__(self, data):
@@ -5,43 +7,55 @@ class NaiveBayesClassifier:
         self.occurrences = dict()
         self.total_words = dict()
         self.probabilities = dict()
+        self.total_samples = len(data)
+        self.prior_probabilities = dict()
+        self.vocab = set()
 
     def get_occurrences(self):
-        for sample in self.data:
-            key = str(sample[1])
-            if key not in self.occurrences.keys():
-                self.occurrences[key] = dict()
-            for word in sample[0]:
-                if word in self.occurrences[key].keys():
-                    self.occurrences[key][word] += 1
+        for words, label in self.data:
+            if label not in self.occurrences:
+                self.occurrences[label] = dict()
+            for word in words:
+                if word in self.occurrences[label]:
+                    self.occurrences[label][word] += 1
                 else:
-                    self.occurrences[key][word] = 1
+                    self.occurrences[label][word] = 1
+                self.vocab.add(word)
 
     def get_total_words(self):
-        for key, occurrences in self.occurrences.items():
-            self.total_words[key] = 0
-            for occurrence in occurrences.values():
-                self.total_words[key] += occurrence
+        for label, occurrences in self.occurrences.items():
+            self.total_words[label] = sum(occurrences.values())
 
     def get_word_probabilities(self):
-        for key, value in self.occurrences.items():
-            self.probabilities[key] = dict()
+        vocab_size = len(self.vocab)
+        for label, value in self.occurrences.items():
+            self.probabilities[label] = dict()
+            total_label_words = self.total_words[label]
             for word, occurrences in value.items():
-                self.probabilities[key][word] = occurrences / self.total_words[key]
+                self.probabilities[label][word] = (occurrences + 1) / (total_label_words + vocab_size)
+
+    def get_prior_prob(self):
+        for label in self.occurrences:
+            self.prior_probabilities[label] = sum(1 for _, l in self.data if l == label) / self.total_samples
 
     def train(self):
         self.get_occurrences()
         self.get_total_words()
         self.get_word_probabilities()
+        self.get_prior_prob()
 
     def classify(self, sentence):
         likelihoods = dict()
 
-        for key, value in self.probabilities.items():
-            likelihoods[key] = 1
+        for label in self.probabilities:
+            likelihoods[label] = math.log(self.prior_probabilities[label])
             for word in sentence:
-                try:
-                    likelihoods[key] *= self.probabilities[key][word]
-                except KeyError:
-                    likelihoods[key] *= 1 / self.total_words[key]
-        return likelihoods
+                if word in self.probabilities[label]:
+                    likelihoods[label] += math.log(self.probabilities[label][word])
+                else:
+                    likelihoods[label] += math.log(1 / self.total_words[label] + len(self.vocab))
+        total_likelihood = sum(math.exp(lklhood) for lklhood in likelihoods.values())
+
+        probabilities = {label: math.exp(lklhood) / total_likelihood for label, lklhood in likelihoods.items()}
+
+        return probabilities
