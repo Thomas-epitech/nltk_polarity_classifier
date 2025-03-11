@@ -1,0 +1,62 @@
+.title {
+    font-family: 'Courier New', monospace;
+    font-size: 50px;
+    text-align: center;
+}
+
+.input {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    justify-content: center;
+}
+
+#sentence-input {
+    border-radius: 10px;
+    border: 1px solid black;
+    font-family: 'Courier New', monospace;
+    height: 200px;
+    width: 800px;
+}
+
+#submit-button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-family: 'Courier New', monospace;
+    font-size: 20px;
+    height: 50px;
+    width: 500px;
+}
+
+#submit-button:hover {
+    background-color: #0166d3;
+}
+
+#submit-button:active {
+    background-color: #1a86fc;
+}
+
+#result {
+    font-family: 'Courier New', monospace;
+    font-size: 25px;
+}
+
+.positive {
+    color: #028d06;
+    font-weight: bold;
+}
+
+.negative {
+    color: #c00121;
+    font-weight: bold;
+}
+
+#input-echo {
+    font-family: 'Courier New', monospace;
+    font-style: italic;
+    margin-top: 20px;
+    margin-bottom: -50px;
+}

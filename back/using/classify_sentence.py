@@ -1,6 +1,8 @@
 import pickle
 from nltk.sentiment.util import mark_negation
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from pprint import pprint
 import os
 import sys
 
@@ -16,17 +18,23 @@ def load_classifier(classifier_path):
     with open(classifier_path, "rb") as file:
         return pickle.load(file)
 
+def filter(sentence):
+    filtered = []
+    stop_words = stopwords.words('english')
+    negated_stop_words = [item for sublist in [[sw, (sw + "_NEG")] for sw in stop_words] for item in sublist]
+
+    for word in sentence:
+        if word not in negated_stop_words:
+            filtered.append(word)
+    return filtered
+
 def classify_sentence(sentence):
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
     classifier_path = os.path.join(current_script_dir, "..", "models",
                                    "sentiment140_trained_model.pkl")
     if not os.path.isfile(classifier_path):
         train()
-    else:
-        retrain = input("Retrain model? (~3-5 minutes) [y/N] ")
-        if retrain == "y" or retrain == "yes" or retrain == "Y" or retrain == "Yes" or retrain == "YES":
-            train()
     classifier = load_classifier(classifier_path)
 
-    words = mark_negation(word_tokenize(sentence.lower()))
+    words = mark_negation(filter(word_tokenize(sentence.lower())))
     return classifier.classify(words)
